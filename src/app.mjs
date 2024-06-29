@@ -39,6 +39,9 @@ app.use("/upcoming", routerUpcoming);
 app.get("/heartbeat", async (req, res) => {
   res.send("Working").status(200);
 });
+app.get("/", async (req, res) => {
+  res.send("Working").status(200);
+});
 
 app.use((req, res, next) => {
   const err = new Error("Not Found");
