@@ -1,10 +1,10 @@
 import express from "express";
 import jwt from "jsonwebtoken";
 
-import webadmin from "../models/webadmin.mjs";
+import webadmin from "../models/webadmin.js";
 
-import checkRole from "../middleware/roleVerify.mjs";
-import verifyToken from "../middleware/googleVerifyToken.mjs";
+import checkRole from "../middleware/roleVerify.js";
+import verifyToken from "../middleware/googleVerifyToken.js";
 
 const routerAdmin = express.Router();
 import dotenv from "dotenv";

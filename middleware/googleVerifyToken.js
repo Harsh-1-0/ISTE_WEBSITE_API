@@ -1,4 +1,4 @@
-import admin from "../config/firebase.mjs";
+import admin from "../config/firebase.js";
 const verifyToken = async (req, res, next) => {
   const idToken = req.headers.authorization?.split("Bearer ")[1];
   if (!idToken) return res.status(401).send("Unauthorized");

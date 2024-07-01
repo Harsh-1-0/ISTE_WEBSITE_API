@@ -1,6 +1,6 @@
 import express from "express";
-import checkRole from "../middleware/roleVerify.mjs";
-import webadmin from "../models/webadmin.mjs";
+import checkRole from "../middleware/roleVerify.js";
+import webadmin from "../models/webadmin.js";
 const routerSuper = express.Router();
 
 routerSuper.use(checkRole([1]));

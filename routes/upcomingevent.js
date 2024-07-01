@@ -1,6 +1,6 @@
 import express from "express";
-import upcomingEvent from "../models/upcomingevent.model.mjs";
-import checkRole from "../middleware/roleVerify.mjs";
+import upcomingEvent from "../models/upcomingevent.model.js";
+import checkRole from "../middleware/roleVerify.js";
 
 const routerUpcoming = express.Router();
 

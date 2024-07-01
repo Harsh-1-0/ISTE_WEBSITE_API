@@ -1,8 +1,8 @@
 import express from "express";
-import checkRole from "../middleware/roleVerify.mjs";
-import upload from "../config/multerconfig.mjs";
-import Advisory from "../models/advisory.model.mjs";
-import cloudinary from "../config/cloudinary.mjs";
+import checkRole from "../middleware/roleVerify.js";
+import upload from "../config/multerconfig.js";
+import Advisory from "../models/advisory.model.js";
+import cloudinary from "../config/cloudinary.js";
 
 const routerAdvisory = express.Router();
 

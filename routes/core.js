@@ -1,8 +1,8 @@
 import express from "express";
-import upload from "../config/multerconfig.mjs";
-import Core from "../models/core.model.mjs";
-import checkRole from "../middleware/roleVerify.mjs";
-import cloudinary from "../config/cloudinary.mjs";
+import upload from "../config/multerconfig.js";
+import Core from "../models/core.model.js";
+import checkRole from "../middleware/roleVerify.js";
+import cloudinary from "../config/cloudinary.js";
 const routerCore = express.Router();
 
 routerCore.get("/", async (req, res) => {

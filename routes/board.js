@@ -1,9 +1,8 @@
 import express from "express";
-import board from "../models/board.model.mjs";
-import upload from "../config/multerconfig.mjs";
-import cloudinary from "../config/cloudinary.mjs";
-import checkRole from "../middleware/roleVerify.mjs";
-import Board from "../models/board.model.mjs";
+import upload from "../config/multerconfig.js";
+import cloudinary from "../config/cloudinary.js";
+import checkRole from "../middleware/roleVerify.js";
+import Board from "../models/board.model.js";
 const routerBoard = new express.Router();
 
 routerBoard.get("/", async (req, res) => {

@@ -3,10 +3,11 @@
   "name": "ISTE Website Backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/app.js",
+  
   "scripts": {
-    "test": "nodemon src/app.mjs",
-    "start": "node src/app.mjs"
+    "test": "nodemon src/app.js",
+    "start": "node src/app.js"
   },
   "keywords": [],
   "author": "",

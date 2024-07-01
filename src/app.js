@@ -1,13 +1,13 @@
 import Express from "express";
-import configDB from "../config/mongodb.mjs";
+import configDB from "../config/mongodb.js";
 
-import routerAdmin from "../routes/admin.mjs";
-import routerSuper from "../routes/super_admin.mjs";
+import routerAdmin from "../routes/admin.js";
+import routerSuper from "../routes/super_admin.js";
 
-import routerCore from "../routes/core.mjs";
-import routerBoard from "../routes/board.mjs";
-import routerAdvisory from "../routes/advisory.mjs";
-import routerUpcoming from "../routes/upcomingevent.mjs";
+import routerCore from "../routes/core.js";
+import routerBoard from "../routes/board.js";
+import routerAdvisory from "../routes/advisory.js";
+import routerUpcoming from "../routes/upcomingevent.js";
 
 import cors from "cors";
 import morgan from "morgan";
