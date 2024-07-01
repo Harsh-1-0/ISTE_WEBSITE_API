@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "test": "nodemon src/app.mjs",
-    "start": "nodemon src/app.mjs"
+    "start": "node src/app.mjs"
   },
   "keywords": [],
   "author": "",
