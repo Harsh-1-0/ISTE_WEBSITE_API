@@ -2,7 +2,7 @@ import admin from "firebase-admin";
 
 import dotenv from "dotenv";
 dotenv.config();
-
+console.log(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON));
 try {
   const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
   admin.initializeApp({
