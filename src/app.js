@@ -13,6 +13,9 @@ import cors from "cors";
 import morgan from "morgan";
 import dotenv from "dotenv";
 dotenv.config();
+
+console.log(process.env.DATABASE_URL);
+console.log(process.env.CLOUDINARY_CLOUD_NAME);
 const app = Express();
 const corsOptions = {
   origin: "http://localhost:3000",
