@@ -14,13 +14,13 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 dotenv.config();
 
-console.log(process.env.DATABASE_URL);
-console.log(process.env.CLOUDINARY_CLOUD_NAME);
-const app = Express();
-const corsOptions = {
-  origin: "http://localhost:3000",
-  optionsSuccessStatus: 200,
-};
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "http://20.197.4.190/"],
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization", "Accept", "Origin"],
+  })
+);
 app.use(cors(corsOptions));
 
 app.use(morgan("dev"));
