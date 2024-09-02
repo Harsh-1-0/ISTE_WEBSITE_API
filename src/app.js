@@ -1,5 +1,6 @@
 import Express from "express";
 import configDB from "../config/mongodb.js";
+const app = Express();
 
 import routerAdmin from "../routes/admin.js";
 import routerSuper from "../routes/super_admin.js";
@@ -16,12 +17,11 @@ dotenv.config();
 
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
+    origin: ["http://localhost:3000", "http://20.197.4.190/"],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization", "Accept", "Origin"],
   })
 );
-app.use(cors(corsOptions));
 
 app.use(morgan("dev"));
 app.use(Express.json());
