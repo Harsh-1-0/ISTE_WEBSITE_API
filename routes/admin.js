@@ -9,7 +9,6 @@ import dotenv from "dotenv";
 dotenv.config();
 
 routerAdmin.post("/signup", verifyToken, async (req, res) => {
-  console.log("Hello");
   const { uid, email, name, picture } = req.user;
   if (!uid) {
     return res.status(400).send("Invalid user ID");
@@ -20,8 +19,9 @@ routerAdmin.post("/signup", verifyToken, async (req, res) => {
     if (!user) {
       user = new webadmin({ uid, email, name, photoURL: picture });
       await user.save();
+      return res.status(201).send("Signed UP");
     }
-    res.send("Signed UP").status(201);
+    res.status(200).send("User already exists");
   } catch (error) {
     console.error(error);
     res.status(500).send(error);
