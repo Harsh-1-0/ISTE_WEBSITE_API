@@ -21,27 +21,11 @@ routerAdmin.post("/signup", verifyToken, async (req, res) => {
       await user.save();
       return res.status(201).send("Signed UP");
     }
-    res.status(200).send("User already exists");
+    res.status(403).send("User already exists");
   } catch (error) {
     console.error(error);
     res.status(500).send(error);
   }
-});
-
-routerAdmin.get("/dashboard", checkRole([1, 2, 3]), async (req, res) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) {
-    return res.status(401).send("Authorization header is missing");
-  }
-  const token = authHeader.split(" ")[1];
-  jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
-    if (err) {
-      console.error("Token verification failed:", err);
-      return res.status(401).send("Invalid token");
-    } else {
-      res.send(decoded).status(200);
-    }
-  });
 });
 
 routerAdmin.post("/login", verifyToken, async (req, res) => {
@@ -64,6 +48,22 @@ routerAdmin.post("/login", verifyToken, async (req, res) => {
     console.error(error);
     res.status(500).send(error);
   }
+});
+
+routerAdmin.get("/dashboard", checkRole([1, 2, 3]), async (req, res) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    return res.status(401).send("Authorization header is missing");
+  }
+  const token = authHeader.split(" ")[1];
+  jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+    if (err) {
+      console.error("Token verification failed:", err);
+      return res.status(401).send("Invalid token");
+    } else {
+      res.send(decoded).status(200);
+    }
+  });
 });
 
 export default routerAdmin;
