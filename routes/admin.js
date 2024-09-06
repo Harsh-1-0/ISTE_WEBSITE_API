@@ -37,12 +37,12 @@ routerAdmin.post("/login", verifyToken, async (req, res) => {
     let user = await webadmin.findOne({ uid });
 
     if (!user) {
-      return res.send("User Not Found").status(404);
+      return res.status(404).send("User Not Found");
     } else {
       const token = jwt.sign(user.toObject(), process.env.SECRET_KEY, {
         expiresIn: "2d",
       });
-      return res.send(token).status(200);
+      return res.status(200).send(token);
     }
   } catch (error) {
     console.error(error);
@@ -61,7 +61,7 @@ routerAdmin.get("/dashboard", checkRole([1, 2, 3]), async (req, res) => {
       console.error("Token verification failed:", err);
       return res.status(401).send("Invalid token");
     } else {
-      return res.send(decoded).status(200);
+      return res.status(200).send(decoded);
     }
   });
 });

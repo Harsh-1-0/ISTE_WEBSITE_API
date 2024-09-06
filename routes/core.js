@@ -8,7 +8,7 @@ const routerCore = express.Router();
 routerCore.get("/", async (req, res) => {
   try {
     const coreData = await Core.find();
-    return res.send(coreData).status(200);
+    return res.status(200).send(coreData);
   } catch (err) {
     console.log(err);
     return res.status(500).send(err.message);
@@ -24,10 +24,10 @@ routerCore.post(
       const { name, regno, domain, linkedin, connectlink } = req.body;
       const checkDupe = await Core.findOne({ regno: req.body.regno });
       if (checkDupe) {
-        return res.send("Duplicate registration number found").status(409);
+        return res.status(409).send("Duplicate registration number found");
       }
       if (!name || !regno || !domain || !linkedin) {
-        return res.send("All fields are required").status(403);
+        return res.status(403).send("All fields are required");
       }
       const stream = cloudinary.uploader.upload_stream(
         {
@@ -48,7 +48,7 @@ routerCore.post(
             connectlink,
           });
           await core.save();
-          return res.send(core).status(201);
+          return res.status(201).send(core);
         }
       );
       stream.end(req.file.buffer);
@@ -63,9 +63,9 @@ routerCore.get("/:regno", async (req, res) => {
   try {
     const core = await Core.findOne({ regno: req.params.regno });
     if (!core) {
-      return res.send("Core not found").status(404);
+      return res.status(404).send("Core not found");
     } else {
-      return res.send(core).status(200);
+      return res.status(200).send(core);
     }
   } catch (err) {
     console.log(err);
@@ -81,7 +81,7 @@ routerCore.patch(
       const { name, domain, linkedin, connectlink } = req.body;
       const core = await Core.findOne({ regno: req.params.regno });
       if (!core) {
-        return res.send("Core Member not found").status(404);
+        return res.status(404).send("Core Member not found");
       }
       if (name) core.name = name;
 
@@ -109,7 +109,7 @@ routerCore.patch(
         stream.end(req.file.buffer);
       } else {
         await core.save();
-        return res.send(core).status();
+        return res.status(201).send(core);
       }
     } catch (err) {
       console.log(err);
@@ -120,9 +120,9 @@ routerCore.patch(
 routerCore.delete("/:regno", checkRole([1, 2]), async (req, res) => {
   try {
     const core = await Core.findOneAndDelete({ regno: req.params.regno });
-    if (!core) return res.send("Core not found").status(404);
+    if (!core) return res.status(404).send("Core not found");
     else {
-      return res.send("Core deleted").status(204);
+      return res.status(204).send("Core deleted");
     }
   } catch (err) {
     console.log(err);

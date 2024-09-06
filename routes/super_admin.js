@@ -7,7 +7,7 @@ routerSuper.use(checkRole([1]));
 routerSuper.get("/", async (req, res) => {
   try {
     const admins = await webadmin.find();
-    res.send(admins).status(200);
+    res.status(200).send(admins);
   } catch (err) {
     console.log(err);
   }
@@ -15,7 +15,7 @@ routerSuper.get("/", async (req, res) => {
 routerSuper.get("/:email", async (req, res) => {
   try {
     const admins = await webadmin.findOne({ email: req.params.email });
-    res.send(admins).status(200);
+    res.status(200).send(admins);
   } catch (err) {
     console.log(err);
   }
@@ -29,9 +29,9 @@ routerSuper.patch("/:email", async (req, res) => {
       { new: true }
     );
     if (!admin) {
-      res.send("Admin Not Found").status(404);
+      res.status(404).send("Admin Not Found");
     }
-    res.send(admin).status(200);
+    res.status(200).send(admin);
   } catch (err) {
     console.log(err);
   }
@@ -41,9 +41,9 @@ routerSuper.delete("/:email", async (req, res) => {
   try {
     const admin = await webadmin.findOneAndDelete({ email: req.params.email });
     if (!admin) {
-      res.send("Admin Not Found").status(404);
+      res.status(404).send("Admin Not Found");
     }
-    res.send(`Admin deleted ${admin}`).status(200);
+    res.status(200).send(`Admin deleted ${admin}`);
   } catch (err) {
     console.log(err);
   }

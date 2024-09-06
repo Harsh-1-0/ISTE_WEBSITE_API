@@ -9,7 +9,7 @@ const routerAdvisory = express.Router();
 routerAdvisory.get("/", async (req, res) => {
   try {
     const advisory = await Advisory.find();
-    res.send(advisory).status(200);
+    res.status(200).send(advisory);
   } catch (err) {
     console.log(err);
   }
@@ -19,10 +19,10 @@ routerAdvisory.get("/:regno", async (req, res) => {
     const advisory = await Advisory.findOne({ regno: req.params.regno });
     if (!advisory) {
       return res
-        .send(`No one found with reg no : ${req.params.regno}`)
-        .status(404);
+        .status(404)
+        .send(`No one found with reg no : ${req.params.regno}`);
     }
-    res.send(advisory).status(200);
+    res.status(200).send(advisory);
   } catch (err) {
     console.log(err);
   }
@@ -33,10 +33,10 @@ routerAdvisory.post("/", upload.single("advisoryimage"), async (req, res) => {
       req.body;
     const checkDupe = await Advisory.findOne({ regno: req.body.regno });
     if (checkDupe) {
-      res.send("Duplicate registration number found").status(409);
+      res.status(409).send("Duplicate registration number found");
     }
     if (!name || !regno || !position || !linkedin) {
-      res.send("All fields are required").status(403);
+      res.status(403).send("All fields are required");
     }
     const stream = cloudinary.uploader.upload_stream(
       {
@@ -57,7 +57,7 @@ routerAdvisory.post("/", upload.single("advisoryimage"), async (req, res) => {
           connectlink,
         });
         await advisoryM.save();
-        res.send(advisoryM).status(201);
+        res.status(201).send(advisoryM);
       }
     );
     stream.end(req.file.buffer);
@@ -74,7 +74,7 @@ routerAdvisory.patch(
     try {
       const advisory = await Advisory.findOne({ regno: req.params.regno });
       if (!advisory) {
-        return res.send("No advisory found").status(404);
+        return res.status(404).send("No advisory found");
       }
       const { name, position, linkedin, connectlink, companyplaced } = req.body;
       if (name) advisory.name = name;
@@ -101,7 +101,7 @@ routerAdvisory.patch(
         stream.end(req.file.buffer);
       } else {
         await advisory.save();
-        return res.send(advisory).status(200);
+        return res.status(200).send(advisory);
       }
     } catch (err) {
       console.log(err);
@@ -112,9 +112,9 @@ routerAdvisory.patch(
 routerAdvisory.delete("/:regno", checkRole([1, 2]), async (req, res) => {
   try {
     const core = await Advisory.findOneAndDelete({ regno: req.params.regno });
-    if (!core) res.send("Core not found").status(404);
+    if (!core) res.status(404).send("Core not found");
     else {
-      res.send("Advisory Board deleted").status(204);
+      res.status(204).send("Advisory Board deleted");
     }
   } catch (err) {
     console.log(err);
