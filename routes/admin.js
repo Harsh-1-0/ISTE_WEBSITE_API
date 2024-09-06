@@ -21,10 +21,10 @@ routerAdmin.post("/signup", verifyToken, async (req, res) => {
       await user.save();
       return res.status(201).send("Signed UP");
     }
-    res.status(403).send("User already exists");
+    return res.status(403).send("User already exists");
   } catch (error) {
     console.error(error);
-    res.status(500).send(error);
+    return res.status(500).send(error);
   }
 });
 
@@ -36,17 +36,17 @@ routerAdmin.post("/login", verifyToken, async (req, res) => {
   try {
     let user = await webadmin.findOne({ uid });
 
-    if (user) {
+    if (!user) {
+      return res.send("User Not Found").status(404);
+    } else {
       const token = jwt.sign(user.toObject(), process.env.SECRET_KEY, {
         expiresIn: "2d",
       });
-      res.send(token).status(200);
-    } else {
-      res.send("User Not Found").status(404);
+      return res.send(token).status(200);
     }
   } catch (error) {
     console.error(error);
-    res.status(500).send(error);
+    return res.status(500).send(error);
   }
 });
 
@@ -61,7 +61,7 @@ routerAdmin.get("/dashboard", checkRole([1, 2, 3]), async (req, res) => {
       console.error("Token verification failed:", err);
       return res.status(401).send("Invalid token");
     } else {
-      res.send(decoded).status(200);
+      return res.send(decoded).status(200);
     }
   });
 });
