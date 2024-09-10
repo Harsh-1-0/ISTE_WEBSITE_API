@@ -27,7 +27,8 @@ routerBoard.post(
   upload.single("boardimage"),
   async (req, res) => {
     try {
-      const { name, regno, position, linkedin, connectlink } = req.body;
+      const { name, surname, regno, position, linkedin, connectlink } =
+        req.body;
       const checkDupe = await Board.findOne({ regno: req.body.regno });
       if (checkDupe) {
         return res.status(409).send("Duplicate registration number found");
@@ -47,6 +48,7 @@ routerBoard.post(
           const imageUrl = result.secure_url;
           const board = new Board({
             name,
+            surname,
             regno,
             image: imageUrl,
             position,
@@ -74,11 +76,12 @@ routerBoard.patch(
       if (!board) {
         return res.status(404).send("No board found");
       }
-      const { name, position, linkedin, connectlink } = req.body;
+      const { name, surname, position, linkedin, connectlink } = req.body;
       if (name) board.name = name;
       if (position) board.position = position;
       if (linkedin) board.linkedin = linkedin;
       if (connectlink) board.connectlink = connectlink;
+      if (surname) board.surname = surname;
       if (req.file) {
         const stream = cloudinary.uploader.upload_stream(
           {

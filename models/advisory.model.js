@@ -4,6 +4,10 @@ const AdvisorySchema = new Schema({
     type: String,
     required: true,
   },
+  surname: {
+    type: String,
+    required: true,
+  },
   regno: {
     type: String,
     required: true,

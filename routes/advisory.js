@@ -29,8 +29,15 @@ routerAdvisory.get("/:regno", async (req, res) => {
 });
 routerAdvisory.post("/", upload.single("advisoryimage"), async (req, res) => {
   try {
-    const { name, regno, position, linkedin, connectlink, companyplaced } =
-      req.body;
+    const {
+      name,
+      surname,
+      regno,
+      position,
+      linkedin,
+      connectlink,
+      companyplaced,
+    } = req.body;
     const checkDupe = await Advisory.findOne({ regno: req.body.regno });
     if (checkDupe) {
       res.status(409).send("Duplicate registration number found");
@@ -50,6 +57,7 @@ routerAdvisory.post("/", upload.single("advisoryimage"), async (req, res) => {
         const imageUrl = result.secure_url;
         const advisoryM = new advisory({
           name,
+          surname,
           regno,
           image: imageUrl,
           position,
@@ -76,12 +84,14 @@ routerAdvisory.patch(
       if (!advisory) {
         return res.status(404).send("No advisory found");
       }
-      const { name, position, linkedin, connectlink, companyplaced } = req.body;
+      const { name, surname, position, linkedin, connectlink, companyplaced } =
+        req.body;
       if (name) advisory.name = name;
       if (position) advisory.position = position;
       if (linkedin) advisory.linkedin = linkedin;
       if (connectlink) advisory.connectlink = connectlink;
       if (companyplaced) advisory.companyplaced = companyplaced;
+      if (surname) advisory.surname = surname;
       if (req.file) {
         const stream = cloudinary.uploader.upload_stream(
           {

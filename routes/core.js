@@ -21,7 +21,7 @@ routerCore.post(
   upload.single("coreimage"),
   async (req, res) => {
     try {
-      const { name, regno, domain, linkedin, connectlink } = req.body;
+      const { name, regno, surname, domain, linkedin, connectlink } = req.body;
       const checkDupe = await Core.findOne({ regno: req.body.regno });
       if (checkDupe) {
         return res.status(409).send("Duplicate registration number found");
@@ -41,6 +41,7 @@ routerCore.post(
           const imageUrl = result.secure_url;
           const core = new Core({
             name,
+            surname,
             regno,
             image: imageUrl,
             domain,
@@ -78,7 +79,7 @@ routerCore.patch(
   upload.single("coreimage"),
   async (req, res) => {
     try {
-      const { name, domain, linkedin, connectlink } = req.body;
+      const { name, surname, domain, linkedin, connectlink } = req.body;
       const core = await Core.findOne({ regno: req.params.regno });
       if (!core) {
         return res.status(404).send("Core Member not found");
@@ -88,6 +89,7 @@ routerCore.patch(
       if (domain) core.domain = domain;
       if (linkedin) core.linkedin = linkedin;
       if (connectlink) core.connectlink = connectlink;
+      if (surname) core.surname = surname;
 
       if (req.file) {
         console.log("Yes");
