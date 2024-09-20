@@ -9,6 +9,7 @@ import routerCore from "../routes/core.js";
 import routerBoard from "../routes/board.js";
 import routerAdvisory from "../routes/advisory.js";
 import routerUpcoming from "../routes/upcomingevent.js";
+import routerGallery from "../routes/gallery.js";
 
 import cors from "cors";
 import morgan from "morgan";
@@ -38,6 +39,7 @@ app.use("/core", routerCore);
 app.use("/board", routerBoard);
 app.use("/advisory", routerAdvisory);
 app.use("/upcoming", routerUpcoming);
+app.use("/gallery", routerGallery);
 
 app.get("/heartbeat", async (req, res) => {
   res.send("Working").status(200);
