@@ -16,8 +16,6 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 dotenv.config();
 
-const cors = require("cors");
-
 app.use(
   cors({
     origin: ["http://localhost:3000", "http://20.197.4.190"], // Allowed origins
