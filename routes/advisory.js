@@ -63,6 +63,7 @@ routerAdvisory.post("/", upload.single("advisoryimage"), async (req, res) => {
           position,
           linkedin,
           connectlink,
+          companyplaced,
         });
         await advisoryM.save();
         res.status(201).send(advisoryM);
