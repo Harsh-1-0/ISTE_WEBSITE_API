@@ -55,7 +55,7 @@ routerAdvisory.post("/", upload.single("advisoryimage"), async (req, res) => {
           return res.status(500).send(error.message);
         }
         const imageUrl = result.secure_url;
-        const advisoryM = new advisory({
+        const advisoryM = new Advisory({
           name,
           surname,
           regno,
