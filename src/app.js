@@ -20,7 +20,13 @@ app.use(
   cors({
     origin: ["http://localhost:3000", "http://20.197.4.190/"],
     credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization", "Accept", "Origin"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Accept",
+      "Origin",
+      "Access - Control - Allow - Origin",
+    ],
   })
 );
 
