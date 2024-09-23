@@ -20,7 +20,7 @@ app.use(
   cors({
     origin: ["http://localhost:3000", "http://20.197.4.190"], // Allowed origins
     credentials: true, // Allows the server to accept cookies or other credentials
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allowed HTTP methods
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], // Allowed HTTP methods
     allowedHeaders: ["Content-Type", "Authorization", "Accept", "Origin"], // Allowed headers
     preflightContinue: false, // Pass the CORS preflight response to the next handler
     optionsSuccessStatus: 204, // Status code for successful OPTIONS requests
