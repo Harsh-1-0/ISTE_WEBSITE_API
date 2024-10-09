@@ -18,7 +18,12 @@ dotenv.config();
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://20.197.4.190"], // Allowed origins
+    origin: [
+      "http://localhost:3000",
+      "http://20.197.4.190",
+      "https://istevit.vercel.app",
+      "https://istevit.in/",
+    ], // Allowed origins
     credentials: true, // Allows the server to accept cookies or other credentials
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], // Allowed HTTP methods
     allowedHeaders: ["Content-Type", "Authorization", "Accept", "Origin"], // Allowed headers
