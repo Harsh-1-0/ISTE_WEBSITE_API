@@ -92,7 +92,6 @@ routerCore.patch(
       if (surname) core.surname = surname;
 
       if (req.file) {
-        console.log("Yes");
         const stream = cloudinary.uploader.upload_stream(
           {
             resource_type: "image",

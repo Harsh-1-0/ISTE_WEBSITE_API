@@ -7,7 +7,11 @@ const routerGallery = express.Router();
 
 routerGallery.get("/", async (req, res) => {
   try {
-    const galleryData = await Gallery.find();
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const skip = (page - 1) * limit;
+    const galleryData = await Gallery.find().skip(skip).limit(limit);
+
     return res.status(200).send(galleryData);
   } catch (err) {
     console.log(err);
@@ -18,27 +22,26 @@ routerGallery.get("/", async (req, res) => {
 routerGallery.post(
   "/",
   checkRole([1, 2, 3]),
-  upload.single("galleryimage"),
+  upload.array("galleryimage"),
   async (req, res) => {
     try {
-      const stream = cloudinary.uploader.upload_stream(
-        {
-          resource_type: "image",
-          format: "webp",
-        },
-        async (error, result) => {
-          if (error) {
-            return res.status(500).send(error.message);
-          }
-          const imageUrl = result.secure_url;
-          const gallery = new Gallery({
-            image: imageUrl,
-          });
-          await gallery.save();
-          return res.status(201).send(gallery);
-        }
-      );
-      stream.end(req.file.buffer);
+      const uploadPromises = req.file.map((file) => {
+        return new Promise((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream(
+            {
+              resource_type: "image",
+              format: "webp",
+            },
+            async (error, result) => {
+              if (error) {
+                return reject(error);
+              }
+              resolve(result.secure_url);
+            }
+          );
+          stream.end(file.stream);
+        });
+      });
     } catch (err) {
       console.log(err);
       return res.status(500).send(err.message);
