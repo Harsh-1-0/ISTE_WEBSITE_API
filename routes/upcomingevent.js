@@ -15,20 +15,6 @@ routerUpcoming.get("/", async (req, res) => {
   }
 });
 
-routerUpcoming.post(
-  "/",
-  checkRole([1, 2]),
-  upload.single("upcoming"),
-  async (req, res) => {
-    try {
-      const UpcomingEvent = new upcomingEvent(req.body);
-      await UpcomingEvent.save();
-    } catch (err) {
-      console.log(err);
-    }
-  }
-);
-
 routerUpcoming.put(
   "/",
   checkRole([1, 2, 3]),
@@ -55,10 +41,11 @@ routerUpcoming.put(
           UpcomingEvent.time = time;
           UpcomingEvent.image = imageUrl;
           await UpcomingEvent.save();
-          return res.status(204).send(UpcomingEvent);
+
+          return res.send(UpcomingEvent).status(200);
         }
       );
-      req.file.stream.pipe(stream);
+      stream.end(req.file.buffer);
     } catch (err) {
       console.log(err);
     }

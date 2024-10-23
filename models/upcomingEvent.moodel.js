@@ -3,16 +3,13 @@ import mongoose, { Schema } from "mongoose";
 const UpcomingEventSchema = new Schema({
   id: {
     type: Number,
-    required: true,
     default: 1,
   },
   title: {
     type: String,
-    required: true,
   },
   image: {
     type: String,
-    required: true,
   },
   date: {
     type: String,
