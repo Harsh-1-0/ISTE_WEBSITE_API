@@ -6,7 +6,6 @@ const EventSchema = new Schema({
   },
   speaker: {
     type: String,
-    required: true,
   },
   description: {
     type: String,
@@ -14,7 +13,6 @@ const EventSchema = new Schema({
   },
   venue: {
     type: String,
-    required: true,
   },
   image: {
     type: String,
