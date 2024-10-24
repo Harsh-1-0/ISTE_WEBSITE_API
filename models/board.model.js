@@ -6,7 +6,6 @@ const BoardSchema = new Schema({
   },
   surname: {
     type: String,
-    required: true,
   },
   regno: {
     type: String,
