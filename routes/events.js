@@ -99,7 +99,7 @@ RouterEvent.get("/:title", async (req, res) => {
   }
 });
 
-RouterEvent.delete("/:title", async (req, res) => {
+RouterEvent.delete("/:title", checkRole([1, 2]), async (req, res) => {
   try {
     const { title } = req.params;
     const response = await Event.findOneAndDelete({ title: title });
@@ -113,6 +113,7 @@ RouterEvent.delete("/:title", async (req, res) => {
 
 RouterEvent.patch(
   "/:title",
+  checkRole([1, 2]),
   upload.fields([
     { name: "eventimage", maxCount: 1 },
     { name: "eventGallery", maxCount: 5 },
