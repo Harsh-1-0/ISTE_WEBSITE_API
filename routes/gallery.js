@@ -7,10 +7,7 @@ const routerGallery = express.Router();
 
 routerGallery.get("/", async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = 10;
-    const skip = (page - 1) * limit;
-    const galleryData = await Gallery.find().skip(skip).limit(limit);
+    const galleryData = await Gallery.find();
 
     return res.status(200).send(galleryData);
   } catch (err) {
@@ -25,23 +22,35 @@ routerGallery.post(
   upload.array("galleryimage"),
   async (req, res) => {
     try {
-      const uploadPromises = req.file.map((file) => {
-        return new Promise((resolve, reject) => {
-          const stream = cloudinary.uploader.upload_stream(
-            {
-              resource_type: "image",
-              format: "webp",
-            },
-            async (error, result) => {
-              if (error) {
-                return reject(error);
+      console.log(typeof req.files);
+      if (!req.files || req.files.length === 0) {
+        return res.status(400).send("No files uploaded.");
+      }
+
+      if (req.files) {
+        const newGalleryUrls = [];
+        for (const file of req.files) {
+          const galleryResult = await new Promise((resove, reject) => {
+            const stream = cloudinary.uploader.upload_stream(
+              {
+                resource_type: "image",
+                format: "webp",
+              },
+              (error, result) => {
+                if (error) reject(error);
+                else resove(result);
               }
-              resolve(result.secure_url);
-            }
-          );
-          stream.end(file.stream);
-        });
-      });
+            );
+            stream.end(file.buffer);
+          });
+          // newGalleryUrls.push();
+          const newImage = new Gallery({
+            image: galleryResult.secure_url,
+          });
+          newImage.save();
+        }
+        return res.status(201).send("Gallery images uploaded successfully.");
+      }
     } catch (err) {
       console.log(err);
       return res.status(500).send(err.message);
