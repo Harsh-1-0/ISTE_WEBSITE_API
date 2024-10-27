@@ -11,6 +11,10 @@ import routerAdvisory from "../routes/advisory.js";
 import routerUpcoming from "../routes/upcomingevent.js";
 import routerGallery from "../routes/gallery.js";
 import routerEvent from "../routes/events.js";
+import RouterGravitas from "../routes/gravitas.js";
+import RouterHorizon from "../routes/horizon.js";
+import RouterRivera from "../routes/rivera.js";
+
 import cors from "cors";
 import morgan from "morgan";
 import dotenv from "dotenv";
@@ -49,6 +53,9 @@ app.use("/advisory", routerAdvisory);
 app.use("/upcoming", routerUpcoming);
 app.use("/gallery", routerGallery);
 app.use("/event", routerEvent);
+app.use("/gravitas", RouterGravitas);
+app.use("/horizon", RouterHorizon);
+app.use("/rivera", RouterRivera);
 
 app.get("/heartbeat", async (req, res) => {
   res.send("Working").status(200);
