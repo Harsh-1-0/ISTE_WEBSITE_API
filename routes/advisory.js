@@ -106,7 +106,7 @@ routerAdvisory.patch(
             const imageUrl = result.secure_url;
             advisory.image = imageUrl;
             await advisory.save();
-            return res.status(200).send(board);
+            return res.status(200).send(advisory);
           }
         );
         stream.end(req.file.buffer);
