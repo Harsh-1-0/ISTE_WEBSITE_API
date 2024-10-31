@@ -24,7 +24,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "https://istevit.in/",
+      "https://istevit.in",
       "https://istevit.vercel.app",
     ], // Allowed origins
     credentials: true, // Allows the server to accept cookies or other credentials
