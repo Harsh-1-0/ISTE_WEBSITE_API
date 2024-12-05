@@ -3,6 +3,10 @@ import upload from "../config/multerconfig.js";
 import Gallery from "../models/gallery.js";
 import checkRole from "../middleware/roleVerify.js";
 import cloudinary from "../config/cloudinary.js";
+import axios from "axios";
+
+import dotenv from "dotenv";
+dotenv.config();
 const routerGallery = express.Router();
 
 routerGallery.get("/", async (req, res) => {
@@ -22,32 +26,22 @@ routerGallery.post(
   upload.array("galleryimage"),
   async (req, res) => {
     try {
-      console.log(typeof req.files);
       if (!req.files || req.files.length === 0) {
         return res.status(400).send("No files uploaded.");
       }
 
       if (req.files) {
-        const newGalleryUrls = [];
         for (const file of req.files) {
-          const galleryResult = await new Promise((resove, reject) => {
-            const stream = cloudinary.uploader.upload_stream(
-              {
-                resource_type: "image",
-                format: "webp",
-              },
-              (error, result) => {
-                if (error) reject(error);
-                else resove(result);
-              }
-            );
-            stream.end(file.buffer);
-          });
-          // newGalleryUrls.push();
+          const galleryResult = await axios.post(
+            `${process.env.IMGBB_URL}?key=${process.env.IMGBB_API_KEY}`,
+            { image: file.buffer.toString("base64") },
+            { headers: { "Content-Type": "multipart/form-data" } }
+          );
+
           const newImage = new Gallery({
-            image: galleryResult.secure_url,
+            image: galleryResult.data.data.url,
           });
-          newImage.save();
+          await newImage.save();
         }
         return res.status(201).send("Gallery images uploaded successfully.");
       }
