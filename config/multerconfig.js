@@ -6,12 +6,12 @@ const fileFilter = (req, file, cb) => {
   if (
     file.mimetype === "image/webp" ||
     file.mimetype === "image/png" ||
-    file.mimetype === "image/jpeg"
+    file.mimetype === "image/jpg"
   ) {
     cb(null, true); // Accept the file
   } else {
     cb(
-      new Error("Invalid mime type. Only WEBP, PNG, and JPEG are allowed!"),
+      new Error("Invalid mime type. Only WEBP, PNG, and JPG are allowed!"),
       false
     );
   }

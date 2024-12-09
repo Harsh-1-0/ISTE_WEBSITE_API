@@ -3,6 +3,7 @@ import upload from "../config/multerconfig.js";
 import Core from "../models/core.model.js";
 import checkRole from "../middleware/roleVerify.js";
 import cloudinary from "../config/cloudinary.js";
+import axios from "axios";
 const routerCore = express.Router();
 
 routerCore.get("/", async (req, res) => {
@@ -29,30 +30,23 @@ routerCore.post(
       if (!name || !regno || !domain || !linkedin) {
         return res.status(403).send("All fields are required");
       }
-      const stream = cloudinary.uploader.upload_stream(
-        {
-          resource_type: "image",
-          format: "webp",
-        },
-        async (error, result) => {
-          if (error) {
-            return res.status(500).send(error.message);
-          }
-          const imageUrl = result.secure_url;
-          const core = new Core({
-            name,
-            surname,
-            regno,
-            image: imageUrl,
-            domain,
-            linkedin,
-            connectlink,
-          });
-          await core.save();
-          return res.status(201).send(core);
-        }
+      const file = req.file;
+      const galleryResult = await axios.post(
+        `${process.env.IMGBB_URL}?key=${process.env.IMGBB_API_KEY}`,
+        { image: file.buffer.toString("base64") },
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
-      stream.end(req.file.buffer);
+      const core = new Core({
+        name,
+        surname,
+        regno,
+        image: galleryResult.data.data.url,
+        domain,
+        linkedin,
+        connectlink,
+      });
+      await core.save();
+      return res.status(201).send(core);
     } catch (err) {
       console.log(err);
       return res.status(500).send(err.message);
@@ -92,22 +86,15 @@ routerCore.patch(
       if (surname) core.surname = surname;
 
       if (req.file) {
-        const stream = cloudinary.uploader.upload_stream(
-          {
-            resource_type: "image",
-            format: "webp",
-          },
-          async (error, result) => {
-            if (error) {
-              return res.status(500).send(error.message);
-            }
-            const imageUrl = result.secure_url;
-            core.image = imageUrl;
-            await core.save();
-            return res.status(200).send(core);
-          }
+        const file = req.file;
+        const galleryResult = await axios.post(
+          `${process.env.IMGBB_URL}?key=${process.env.IMGBB_API_KEY}`,
+          { image: file.buffer.toString("base64") },
+          { headers: { "Content-Type": "multipart/form-data" } }
         );
-        stream.end(req.file.buffer);
+        core.image = galleryResult.data.data.url;
+        core.save();
+        return res.status(200).send(core);
       } else {
         await core.save();
         return res.status(201).send(core);
