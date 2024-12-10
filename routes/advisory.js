@@ -45,31 +45,24 @@ routerAdvisory.post("/", upload.single("advisoryimage"), async (req, res) => {
     if (!name || !regno || !position || !linkedin) {
       res.status(403).send("All fields are required");
     }
-    const stream = cloudinary.uploader.upload_stream(
-      {
-        resource_type: "image",
-        format: "webp",
-      },
-      async (error, result) => {
-        if (error) {
-          return res.status(500).send(error.message);
-        }
-        const imageUrl = result.secure_url;
-        const advisoryM = new Advisory({
-          name,
-          surname,
-          regno,
-          image: imageUrl,
-          position,
-          linkedin,
-          connectlink,
-          companyplaced,
-        });
-        await advisoryM.save();
-        res.status(201).send(advisoryM);
-      }
+    const file = req.file;
+    const galleryResult = await axios.post(
+      `${process.env.IMGBB_URL}?key=${process.env.IMGBB_API_KEY}`,
+      { image: file.buffer.toString("base64") },
+      { headers: { "Content-Type": "multipart/form-data" } }
     );
-    stream.end(req.file.buffer);
+    const advisory = new Advisory({
+      name,
+      surname,
+      regno,
+      image: galleryResult.data.data.url,
+      position,
+      linkedin,
+      connectlink,
+      companyplaced,
+    });
+    await advisory.save();
+    return res.status(201).send(advisory);
   } catch (err) {
     console.log(err);
   }
@@ -94,22 +87,15 @@ routerAdvisory.patch(
       if (companyplaced) advisory.companyplaced = companyplaced;
       if (surname) advisory.surname = surname;
       if (req.file) {
-        const stream = cloudinary.uploader.upload_stream(
-          {
-            resource_type: "image",
-            format: "webp",
-          },
-          async (error, result) => {
-            if (error) {
-              return res.status(500).send(error.message);
-            }
-            const imageUrl = result.secure_url;
-            advisory.image = imageUrl;
-            await advisory.save();
-            return res.status(200).send(advisory);
-          }
+        const file = req.file;
+        const galleryResult = await axios.post(
+          `${process.env.IMGBB_URL}?key=${process.env.IMGBB_API_KEY}`,
+          { image: file.buffer.toString("base64") },
+          { headers: { "Content-Type": "multipart/form-data" } }
         );
-        stream.end(req.file.buffer);
+        advisory.image = galleryResult.data.data.url;
+        await advisory.save();
+        return res.status(201).send(advisory);
       } else {
         await advisory.save();
         return res.status(200).send(advisory);

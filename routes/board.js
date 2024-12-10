@@ -3,6 +3,7 @@ import upload from "../config/multerconfig.js";
 import cloudinary from "../config/cloudinary.js";
 import checkRole from "../middleware/roleVerify.js";
 import Board from "../models/board.model.js";
+import axios from "axios";
 const routerBoard = new express.Router();
 
 routerBoard.get("/", async (req, res) => {
@@ -36,30 +37,23 @@ routerBoard.post(
       if (!name || !regno || !position || !linkedin) {
         return res.status(403).send("All fields are required");
       }
-      const stream = cloudinary.uploader.upload_stream(
-        {
-          resource_type: "image",
-          format: "webp",
-        },
-        async (error, result) => {
-          if (error) {
-            return res.status(500).send(error.message);
-          }
-          const imageUrl = result.secure_url;
-          const board = new Board({
-            name,
-            surname,
-            regno,
-            image: imageUrl,
-            position,
-            linkedin,
-            connectlink,
-          });
-          await board.save();
-          return res.status(201).send(board);
-        }
+      const file = req.file;
+      const galleryResult = await axios.post(
+        `${process.env.IMGBB_URL}?key=${process.env.IMGBB_API_KEY}`,
+        { image: file.buffer.toString("base64") },
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
-      stream.end(req.file.buffer);
+      const board = new Board({
+        name,
+        surname,
+        regno,
+        image: galleryResult.data.data.url,
+        position,
+        linkedin,
+        connectlink,
+      });
+      await board.save();
+      return res.status(201).send(board);
     } catch (err) {
       console.log(err);
     }
@@ -83,22 +77,15 @@ routerBoard.patch(
       if (connectlink) board.connectlink = connectlink;
       if (surname) board.surname = surname;
       if (req.file) {
-        const stream = cloudinary.uploader.upload_stream(
-          {
-            resource_type: "image",
-            format: "webp",
-          },
-          async (error, result) => {
-            if (error) {
-              return res.status(500).send(error.message);
-            }
-            const imageUrl = result.secure_url;
-            board.image = imageUrl;
-            await board.save();
-            return res.status(200).send(board);
-          }
+        const file = req.file;
+        const galleryResult = await await axios.post(
+          `${process.env.IMGBB_URL}?key=${process.env.IMGBB_API_KEY}`,
+          { image: file.buffer.toString("base64") },
+          { headers: { "Content-Type": "multipart/form-data" } }
         );
-        stream.end(req.file.buffer);
+        board.image = galleryResult.data.data.url;
+        board.save();
+        return res.status(200).send(board);
       } else {
         await board.save();
         return res.status(200).send(board);
