@@ -16,34 +16,43 @@ routerCore.get("/", async (req, res) => {
   }
 });
 
-routerCore.post("/", checkRole([1, 2, 3]), async (req, res) => {
-  try {
-    const { name, regno, surname, domain, linkedin, connectlink, coreimage } =
-      req.body;
-    const checkDupe = await Core.findOne({ regno: req.body.regno });
-    if (checkDupe) {
-      return res.status(409).send("Duplicate registration number found");
+routerCore.post(
+  "/",
+  checkRole([1, 2, 3]),
+  upload.single("coreimage"),
+  async (req, res) => {
+    try {
+      const { name, regno, surname, domain, linkedin, connectlink } = req.body;
+      const checkDupe = await Core.findOne({ regno: req.body.regno });
+      if (checkDupe) {
+        return res.status(409).send("Duplicate registration number found");
+      }
+      if (!name || !regno || !domain || !linkedin) {
+        return res.status(403).send("All fields are required");
+      }
+      const file = req.file;
+      const galleryResult = await axios.post(
+        `${process.env.IMGBB_URL}?key=${process.env.IMGBB_API_KEY}`,
+        { image: file.buffer.toString("base64") },
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+      const core = new Core({
+        name,
+        surname,
+        regno,
+        image: galleryResult.data.data.url,
+        domain,
+        linkedin,
+        connectlink,
+      });
+      await core.save();
+      return res.status(201).send(core);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send(err.message);
     }
-    if (!name || !regno || !domain || !linkedin) {
-      return res.status(403).send("All fields are required");
-    }
-
-    const core = new Core({
-      name,
-      surname,
-      regno,
-      image: coreimage,
-      domain,
-      linkedin,
-      connectlink,
-    });
-    await core.save();
-    return res.status(201).send(core);
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send(err.message);
   }
-});
+);
 
 routerCore.get("/:regno", async (req, res) => {
   try {
