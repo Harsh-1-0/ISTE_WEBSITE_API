@@ -3,6 +3,7 @@ import checkRole from "../middleware/roleVerify.js";
 import upload from "../config/multerconfig.js";
 import Advisory from "../models/advisory.model.js";
 import cloudinary from "../config/cloudinary.js";
+import axios from "axios";
 
 const routerAdvisory = express.Router();
 
