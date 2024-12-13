@@ -18,9 +18,17 @@ const EventSchema = new Schema({
     type: String,
     required: true,
   },
-  eventImages:{
+  eventImages: {
     type: Array,
-  }
+  },
+  type: {
+    type: String,
+    required: true,
+  },
+  date: {
+    type:String,
+    required: true,
+  },
 });
 const Event = mongoose.model("Event", EventSchema);
 export default Event;

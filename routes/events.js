@@ -3,6 +3,7 @@ import upload from "../config/multerconfig.js";
 import Event from "../models/event.model.js";
 import checkRole from "../middleware/roleVerify.js";
 import cloudinary from "../config/cloudinary.js";
+import axios from "axios";
 
 const RouterEvent = new express.Router();
 
@@ -26,45 +27,30 @@ RouterEvent.post(
   ]),
   async (req, res) => {
     try {
-      const { title, description, speaker, venue } = req.body;
-      let mainImageUrl;
+      const { title, description, speaker, venue, type, date } = req.body;
       let galleryUrls = [];
-
+      let mainImage;
       // Upload main image
       if (req.files.eventimage) {
-        const mainImageResult = await new Promise((resolve, reject) => {
-          const stream = cloudinary.uploader.upload_stream(
-            {
-              resource_type: "image",
-              format: "webp",
-            },
-            (error, result) => {
-              if (error) reject(error);
-              else resolve(result);
-            }
-          );
-          stream.end(req.files.eventimage[0].buffer);
-        });
-        mainImageUrl = mainImageResult.secure_url;
+        const file = req.files.eventimage[0];
+        mainImage = await axios.post(
+          `${process.env.IMGBB_URL}?key=${process.env.IMGBB_API_KEY}`,
+          { image: file.buffer.toString("base64") },
+          { headers: { "Content-Type": "multipart/form-data" } }
+        );
       }
-
       // Upload gallery images
       if (req.files.eventGallery) {
         for (const file of req.files.eventGallery) {
-          const galleryResult = await new Promise((resolve, reject) => {
-            const stream = cloudinary.uploader.upload_stream(
-              {
-                resource_type: "image",
-                format: "webp",
-              },
-              (error, result) => {
-                if (error) reject(error);
-                else resolve(result);
-              }
-            );
-            stream.end(file.buffer);
-          });
-          galleryUrls.push(galleryResult.secure_url);
+          const buffer = await file.buffer.toString("base64");
+
+          const galleryResult = await axios.post(
+            `${process.env.IMGBB_URL}?key=${process.env.IMGBB_API_KEY}`,
+            { image: buffer },
+            { headers: { "Content-Type": "multipart/form-data" } }
+          );
+          console.log(galleryResult.data.data.url);
+          galleryUrls.push(galleryResult.data.data.url);
         }
       }
 
@@ -72,9 +58,11 @@ RouterEvent.post(
         title,
         description,
         speaker,
-        image: mainImageUrl,
+        image: mainImage.data.data.url,
         venue,
         eventImages: galleryUrls,
+        date,
+        type,
       });
 
       await event.save();
