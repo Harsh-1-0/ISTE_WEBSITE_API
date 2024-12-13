@@ -1,9 +1,8 @@
 import express from "express";
 import upcomingEvent from "../models/upcomingEvent.moodel.js";
 import checkRole from "../middleware/roleVerify.js";
-import cloudinary from "../config/cloudinary.js";
 import upload from "../config/multerconfig.js";
-
+import axios from "axios";
 const routerUpcoming = express.Router();
 
 routerUpcoming.get("/", async (req, res) => {
@@ -23,29 +22,21 @@ routerUpcoming.put(
     try {
       const UpcomingEvent = await upcomingEvent.findOne({ id: 1 });
       const { title, description, speaker, venue, date, time } = req.body;
-      const stream = cloudinary.uploader.upload_stream(
-        {
-          resource_type: "image",
-          format: "webp",
-        },
-        async (error, result) => {
-          if (error) {
-            return res.status(500).send(error.message);
-          }
-          const imageUrl = result.secure_url;
-          UpcomingEvent.title = title;
-          UpcomingEvent.description = description;
-          UpcomingEvent.speaker = speaker;
-          UpcomingEvent.venue = venue;
-          UpcomingEvent.date = date;
-          UpcomingEvent.time = time;
-          UpcomingEvent.image = imageUrl;
-          await UpcomingEvent.save();
-
-          return res.send(UpcomingEvent).status(200);
-        }
+      const file = req.file;
+      const galleryResult = await axios.post(
+        `${process.env.IMGBB_URL}?key=${process.env.IMGBB_API_KEY}`,
+        { image: file.buffer.toString("base64") },
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
-      stream.end(req.file.buffer);
+      UpcomingEvent.title = title;
+      UpcomingEvent.description = description;
+      UpcomingEvent.speaker = speaker;
+      UpcomingEvent.venue = venue;
+      UpcomingEvent.date = date;
+      UpcomingEvent.time = time;
+      UpcomingEvent.image = galleryResult.data.data.url;
+      await UpcomingEvent.save();
+      return res.send(UpcomingEvent).status(200);
     } catch (err) {
       console.log(err);
     }
